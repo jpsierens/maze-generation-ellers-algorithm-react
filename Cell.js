@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class Cell extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   /**
@@ -19,12 +19,14 @@ class Cell extends Component {
     const { walls } = this.props;
     return (
       <div className={this.getWallsToShow(walls)}>
+        {this.props.setID}
       </div>
     );
   }
 }
 
 Cell.propTypes = {
+  setID: PropTypes.number,
   walls: PropTypes.exact({
     left: PropTypes.bool,
     right: PropTypes.bool,

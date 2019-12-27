@@ -7,7 +7,10 @@ import './style.css';
 class Maze extends Component {
   constructor() {
     super();
-    this.speed = 1000;
+    this.currentSetID = 1;
+    this.timesTicked = 0;
+    this.speed = 2000;
+    this.chanceToJoin = 0.3;
     this.initialWalls = {
       left: true,
       right: true,
@@ -22,20 +25,43 @@ class Maze extends Component {
   }
 
   componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      this.speed
-    );
+    // this.timerID = setInterval(
+    //   () => this.tick(),
+    //   this.speed
+    // );
   }
 
   componentWillUnmount() {
     clearInterval(this.timerID);
   }
 
-  tick() {
+  createRow() {
     this.setState({
-      cells: this.state.cells.push(<Cell walls={this.initialWalls}/>)
+      cells: [
+        ...this.state.cells, 
+        <Cell setID={this.currentSetID} walls={this.initialWalls}/>
+      ]
     });
+    this.currentSetID += 1;
+  }
+
+  joinSomeCells() {
+    if (this.state.cells.length >= this.state.width) {
+      clearInterval(this.timerID);
+      return;
+    }
+    this.setState
+  }
+
+  tick() {
+    this.timesTicked++;
+    console.log(this.timesTicked);
+    if (this.state.cells.length >= this.state.width) {
+      this.currentSetID = this.timesTicked - this.state.width;
+      this.joinSomeCells();
+      return;
+    }
+    this.createRow();
   }
 
   render() {
