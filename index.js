@@ -11,6 +11,8 @@ class Maze extends Component {
     this.timesTicked = 0;
     this.speed = 2000;
     this.chanceToJoin = 0.3;
+    this.width = 5;
+    this.height = 10;
     this.initialWalls = {
       left: true,
       right: true,
@@ -18,17 +20,15 @@ class Maze extends Component {
       bottom: true,
     }
     this.state = {
-      width: 10,
-      height: 10,
       cells: [],
     };
   }
 
   componentDidMount() {
-    // this.timerID = setInterval(
-    //   () => this.tick(),
-    //   this.speed
-    // );
+    this.timerID = setInterval(
+      () => this.tick(),
+      this.speed
+    );
   }
 
   componentWillUnmount() {
@@ -39,25 +39,36 @@ class Maze extends Component {
     this.setState({
       cells: [
         ...this.state.cells, 
-        <Cell setID={this.currentSetID} walls={this.initialWalls}/>
+        <Cell setID={this.currentSetID}
+              walls={this.initialWalls}/>
       ]
     });
     this.currentSetID += 1;
   }
 
   joinSomeCells() {
-    if (this.state.cells.length >= this.state.width) {
+    if (this.currentSetID >= this.width) {
       clearInterval(this.timerID);
       return;
     }
-    this.setState
+    const cells = this.state.cells.map((cell, i) => {
+      if (i - 1 !== this.currentSetID) {
+        return cell
+      }
+      return <Cell setID={i}
+                   active={i === this.currentSetID ? true : false}
+                   walls={this.initialWalls}/>
+    });
+
+    this.setState({ cells });
+    
   }
 
   tick() {
     this.timesTicked++;
     console.log(this.timesTicked);
-    if (this.state.cells.length >= this.state.width) {
-      this.currentSetID = this.timesTicked - this.state.width;
+    if (this.state.cells.length >= this.width) {
+      this.currentSetID = this.timesTicked - this.width;
       this.joinSomeCells();
       return;
     }

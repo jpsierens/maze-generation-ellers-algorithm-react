@@ -10,7 +10,7 @@ h1, p {
   align-items: center;
 }
 
-.focused {
+.active {
   background: rgba(0,0,0,0.5);
 }
 
