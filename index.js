@@ -7,10 +7,10 @@ import './style.css';
 class Maze extends Component {
   constructor() {
     super();
-    this.currentSetID = 1;
+    this.currentSetID = 0;
     this.timesTicked = 0;
-    this.speed = 2000;
-    this.chanceToJoin = 0.3;
+    this.speed = 500;
+    this.chanceToJoin = 0.3; // x100 for %
     this.width = 5;
     this.height = 10;
     this.initialWalls = {
@@ -46,19 +46,49 @@ class Maze extends Component {
     this.currentSetID += 1;
   }
 
+  willJoin() {
+    return Math.random() > chanceToJoin;
+  }
+
   joinSomeCells() {
-    if (this.currentSetID >= this.width) {
+    if (this.currentSetID > this.width) {
       clearInterval(this.timerID);
       return;
     }
+    let activeCellIndex;
     const cells = this.state.cells.map((cell, i) => {
-      if (i - 1 !== this.currentSetID) {
-        return cell
+      if (i !== this.currentSetID) {
+        return <Cell setID={i}
+                     active={false}
+                     walls={this.state.cells[i].props.walls}/>
       }
-      return <Cell setID={i}
-                   active={i === this.currentSetID ? true : false}
-                   walls={this.initialWalls}/>
+      return <Cell setID={this.currentSetID}
+                   active={true}
+                   walls={this.state.cells[this.currentSetID].props.walls}/>
     });
+
+    if (this.willJoin) {
+      const walls = {
+        ...cells[this.currentSetID].props.walls,
+        right: false,
+      }
+      cells[this.currentSetID] = 
+        <Cell setID={this.currentSetID}
+              active={true}
+              walls={walls}/>
+
+
+      if (this.currentSetID < this.width) {
+        const nextCellWalls = {
+          ...cells[this.currentSetID + 1].props.walls,
+          left: false,
+        }
+        cells[this.currentSetID + 1] = 
+          <Cell setID={this.currentSetID + 1}
+                active={false}
+                walls={nextCellWalls}/>
+        }
+    }
 
     this.setState({ cells });
     
@@ -68,7 +98,7 @@ class Maze extends Component {
     this.timesTicked++;
     console.log(this.timesTicked);
     if (this.state.cells.length >= this.width) {
-      this.currentSetID = this.timesTicked - this.width;
+      this.currentSetID = this.timesTicked - this.width - 1;
       this.joinSomeCells();
       return;
     }
