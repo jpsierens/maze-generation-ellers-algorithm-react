@@ -7,11 +7,11 @@ import './style.css';
 class Maze extends Component {
   constructor() {
     super();
-    this.currentSetID = 0;
+    this.currentCell = 0;
     this.timesTicked = 0;
     this.speed = 500;
     this.chanceToJoin = 0.3; // x100 for %
-    this.width = 5;
+    this.width = 10;
     this.height = 10;
     this.initialWalls = {
       left: true,
@@ -39,55 +39,59 @@ class Maze extends Component {
     this.setState({
       cells: [
         ...this.state.cells, 
-        <Cell setID={this.currentSetID}
+        <Cell setID={this.currentCell}
               walls={this.initialWalls}/>
       ]
     });
-    this.currentSetID += 1;
+    this.currentCell += 1;
   }
 
   willJoin() {
-    return Math.random() > chanceToJoin;
+    return Math.random() > this.chanceToJoin;
+  }
+
+  highlightCurrentCell() {
+    return this.state.cells.map((cell, i) => {
+      if (i !== this.currentCell) {
+        return <Cell setID={cell.props.setID}
+                     active={false}
+                     walls={cell.props.walls}/>
+      }
+      return <Cell setID={cell.props.setID}
+                   active={true}
+                   walls={cell.props.walls}/>
+    });
   }
 
   joinSomeCells() {
-    if (this.currentSetID > this.width) {
+    if (this.currentCell > this.width - 2) {
       clearInterval(this.timerID);
       return;
     }
-    let activeCellIndex;
-    const cells = this.state.cells.map((cell, i) => {
-      if (i !== this.currentSetID) {
-        return <Cell setID={i}
-                     active={false}
-                     walls={this.state.cells[i].props.walls}/>
-      }
-      return <Cell setID={this.currentSetID}
-                   active={true}
-                   walls={this.state.cells[this.currentSetID].props.walls}/>
-    });
 
-    if (this.willJoin) {
+    const cells = this.highlightCurrentCell();
+    const currentCellSetId = cells[this.currentCell].props.setID;
+
+    if (this.willJoin()) {
       const walls = {
-        ...cells[this.currentSetID].props.walls,
+        ...cells[this.currentCell].props.walls,
         right: false,
       }
-      cells[this.currentSetID] = 
-        <Cell setID={this.currentSetID}
+      cells[this.currentCell] = 
+        <Cell setID={currentCellSetId}
               active={true}
               walls={walls}/>
 
-
-      if (this.currentSetID < this.width) {
+      if (this.currentCell < this.width - 1) {
         const nextCellWalls = {
-          ...cells[this.currentSetID + 1].props.walls,
+          ...cells[this.currentCell + 1].props.walls,
           left: false,
         }
-        cells[this.currentSetID + 1] = 
-          <Cell setID={this.currentSetID + 1}
+        cells[this.currentCell + 1] = 
+          <Cell setID={currentCellSetId}
                 active={false}
                 walls={nextCellWalls}/>
-        }
+      }
     }
 
     this.setState({ cells });
@@ -98,7 +102,7 @@ class Maze extends Component {
     this.timesTicked++;
     console.log(this.timesTicked);
     if (this.state.cells.length >= this.width) {
-      this.currentSetID = this.timesTicked - this.width - 1;
+      this.currentCell = this.timesTicked - this.width - 1;
       this.joinSomeCells();
       return;
     }
