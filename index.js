@@ -50,52 +50,59 @@ class Maze extends Component {
     return Math.random() > this.chanceToJoin;
   }
 
-  highlightCurrentCell() {
+  getCellsAndHighlightCurrent() {
     return this.state.cells.map((cell, i) => {
       if (i !== this.currentCell) {
         return <Cell setID={cell.props.setID}
                      active={false}
                      walls={cell.props.walls}/>
       }
-      return <Cell setID={cell.props.setID}
-                   active={true}
-                   walls={cell.props.walls}/>
+      return cell;
     });
   }
 
+  joinCellToSet(cells, currentCellSetId) {
+    const walls = {
+      ...cells[this.currentCell].props.walls,
+      right: false,
+    }
+    return (
+      <Cell setID={currentCellSetId}
+            active={true}
+            walls={walls}/>
+    );
+  }
+
+  joinCellToLastSet(cells) {
+    const walls = {
+      ...cells[this.currentCell].props.walls,
+      left: false,
+    }
+    return (
+      <Cell setID={cells[this.currentCell - 1].props.setID}
+            active={true}
+            walls={walls}/>
+    );
+  }
+
   joinSomeCells() {
-    if (this.currentCell > this.width - 2) {
+    if (this.currentCell > this.width - 1) {
       clearInterval(this.timerID);
       return;
     }
 
-    const cells = this.highlightCurrentCell();
+    const cells = this.getCellsAndHighlightCurrent();
     const currentCellSetId = cells[this.currentCell].props.setID;
 
     if (this.willJoin()) {
-      const walls = {
-        ...cells[this.currentCell].props.walls,
-        right: false,
-      }
-      cells[this.currentCell] = 
-        <Cell setID={currentCellSetId}
-              active={true}
-              walls={walls}/>
+      cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
+    }
 
-      if (this.currentCell < this.width - 1) {
-        const nextCellWalls = {
-          ...cells[this.currentCell + 1].props.walls,
-          left: false,
-        }
-        cells[this.currentCell + 1] = 
-          <Cell setID={currentCellSetId}
-                active={false}
-                walls={nextCellWalls}/>
-      }
+    if (cells[this.currentCell - 1] && !cells[this.currentCell - 1].props.walls.right) {
+      cells[this.currentCell] = this.joinCellToLastSet(cells);
     }
 
     this.setState({ cells });
-    
   }
 
   tick() {
