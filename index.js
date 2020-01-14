@@ -31,26 +31,15 @@ class Maze extends Component {
     if (index === 3) {
       return;
     }
-    const newCells = [...this.state.cells];
-    newCells[index] = cells;
 
-    // the old rows
-    const rows = this.state.rows.map((row, i) => {
-      return <Row index={i} 
-                  width={this.width}
-                  cells={newCells[i]}
-                  previousRowCells={false}
-                  sendRowState={this.receiveCompleteRow.bind(this)} />
-    })
     this.setState({
-      cells: newCells,
       rows: [
         ...this.state.rows,
         // the new row
         <Row index={index + 1} 
              width={this.width}
              cells={false}
-             previousRowCells={newCells[index]}
+            //  previousRowCells={newCells[index]}
              sendRowState={this.receiveCompleteRow.bind(this)} />
       ]
     });
