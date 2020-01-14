@@ -34,11 +34,12 @@ class Maze extends Component {
 
     this.setState({
       rows: [
+        // react saves the state for the previous rows so we just need
+        // to spread them here again
         ...this.state.rows,
         // the new row
         <Row index={index + 1} 
              width={this.width}
-             cells={false}
             //  previousRowCells={newCells[index]}
              sendRowState={this.receiveCompleteRow.bind(this)} />
       ]

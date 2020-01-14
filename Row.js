@@ -23,12 +23,6 @@ class Row extends Component {
   }
 
   componentDidMount() {
-    // if we already generated this specific row before, no need
-    // to go through all the steps again.
-    if (this.props.cellState) {
-      this.setState({ cells: cellState });
-      return;
-    } 
     this.timerID = setInterval(
       () => this.tick(),
       this.speed
