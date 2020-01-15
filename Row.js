@@ -15,7 +15,6 @@ class Row extends Component {
       left: true,
       right: true,
       top: true,
-      bottom: true,
     }
     this.state = {
       cells: [],
@@ -34,11 +33,26 @@ class Row extends Component {
   }
 
   createRow() {
+    let newCell;
+    const {previousRowCells} = this.props;
+    // if its not first, check if there will be a 
+    // random vertical connection
+    if (previousRowCells && this.willJoin()) {
+      const walls = {
+        ...this.initialWalls,
+        top: false
+      }
+      newCell = <Cell setID={previousRowCells[this.currentCell].props.setID}
+                      walls={walls}/>;
+    } else {
+      newCell = <Cell setID={this.currentCell}
+                      walls={this.initialWalls}/>;
+    }
+
     this.setState({
       cells: [
         ...this.state.cells, 
-        <Cell setID={this.currentCell}
-              walls={this.initialWalls}/>
+        newCell
       ]
     });
     this.currentCell += 1;
@@ -102,6 +116,9 @@ class Row extends Component {
       cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
     }
 
+    // if the current cell must be joined to the previous cell
+    // whether it will join or not was decided on the previous tick
+    // we just do the join in this tick so that it visually looks like
     if (cells[this.currentCell - 1] && !cells[this.currentCell - 1].props.walls.right) {
       cells[this.currentCell] = this.joinCellToLastSet(cells);
     }
@@ -111,6 +128,13 @@ class Row extends Component {
 
   tick() {
     this.timesTicked++;
+
+    // after the row has been created, ensure that atleast
+    // one vertical connection exists per set
+    // if not, randomly assign one
+    if (this.state.cells.length === this.props.width) {
+      
+    }
 
     if (this.state.cells.length >= this.props.width) {
       this.currentCell = this.timesTicked - this.props.width - 1;

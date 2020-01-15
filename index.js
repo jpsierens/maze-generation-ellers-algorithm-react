@@ -40,7 +40,7 @@ class Maze extends Component {
         // the new row
         <Row index={index + 1} 
              width={this.width}
-            //  previousRowCells={newCells[index]}
+             previousRowCells={cells}
              sendRowState={this.receiveCompleteRow.bind(this)} />
       ]
     });
