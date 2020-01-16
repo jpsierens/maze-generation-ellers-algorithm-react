@@ -7,9 +7,10 @@ import Cell from './Cell.js'
 class Row extends Component {
   constructor(props) {
     super(props);
+    // the index of the cell inside the row
     this.currentCell = 0;
     this.timesTicked = 0;
-    this.speed = 500;
+    this.speed = 100;
     this.chanceToJoin = 0.66; // x100 for %
     this.initialWalls = {
       left: true,
@@ -45,7 +46,9 @@ class Row extends Component {
       newCell = <Cell setID={previousRowCells[this.currentCell].props.setID}
                       walls={walls}/>;
     } else {
-      newCell = <Cell setID={this.currentCell}
+      // adding the row index as a multiple of 10 to the currentCell
+      // we make sure that the setID hasn't been used before
+      newCell = <Cell setID={this.props.index*10 + this.currentCell}
                       walls={this.initialWalls}/>;
     }
 
@@ -103,9 +106,7 @@ class Row extends Component {
   joinSomeCells() {
     if (this.currentCell > this.props.width - 1) {
       clearInterval(this.timerID);
-      // tell the Maze that the row is done, so we can pass
-      // the state of the row to the next Row
-      this.props.sendRowState(this.state.cells, this.props.index);
+      this.ensureVerticalConnections();
       return;
     }
 
@@ -126,21 +127,37 @@ class Row extends Component {
     this.setState({ cells });
   }
 
+  // after the row has been created, ensure that atleast
+  // one vertical connection exists per set
+  // if not, randomly assign one
+  // TODO: continue
+  ensureVerticalConnections() {
+    // with form {[setID]: cellsBelongingToSet[]}
+    const setMap = {};
+    this.state.cells.forEach((cell,i) => {
+      const setID = cell.props.setID;
+      if (!setMap[setID]) {
+        setMap[setID] = [];
+      }
+      setMap[setID].push(i);
+    })
+
+    console.log(setMap);
+    // set state and then
+    // tell the Maze that the row is done, so we can pass
+    // the state of the row to the next Row
+    this.props.sendRowState(this.state.cells, this.props.index);
+  }
+
   tick() {
     this.timesTicked++;
 
-    // after the row has been created, ensure that atleast
-    // one vertical connection exists per set
-    // if not, randomly assign one
     if (this.state.cells.length === this.props.width) {
-      
-    }
-
-    if (this.state.cells.length >= this.props.width) {
       this.currentCell = this.timesTicked - this.props.width - 1;
       this.joinSomeCells();
       return;
     }
+
     this.createRow();
   }
 
