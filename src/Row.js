@@ -132,6 +132,10 @@ class Row extends Component {
   // if not, randomly assign one
   // TODO: continue
   ensureVerticalConnections() {
+    // if (this.props.previousRowCells) {
+    //   return;
+    // }
+
     // with form {[setID]: cellsBelongingToSet[]}
     const setMap = {};
     this.state.cells.forEach((cell,i) => {
@@ -140,9 +144,23 @@ class Row extends Component {
         setMap[setID] = [];
       }
       setMap[setID].push(i);
-    })
+    });
+
+    const cellsToAddVerticalConnection = Object.keys(setMap).map(key => {
+      let hasAVerticalConnection = false;
+      setMap[key].forEach(cellIndex => {
+        if (!this.state.cells[cellIndex].props.walls.top) {
+          hasAVerticalConnection = true;
+        }
+      });
+
+      if (hasAVerticalConnection) return null;
+      // randomly choose a vertical connection
+      return setMap[key][Math.floor(Math.random() * setMap[key].length)];
+    });
 
     console.log(setMap);
+    console.log(cellsToAddVerticalConnection);
     // set state and then
     // tell the Maze that the row is done, so we can pass
     // the state of the row to the next Row
