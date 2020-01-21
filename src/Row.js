@@ -16,6 +16,7 @@ class Row extends Component {
       left: true,
       right: true,
       top: true,
+      bottom: false,
     }
     this.state = {
       cells: [],
@@ -104,16 +105,32 @@ class Row extends Component {
   }
 
   joinSomeCells() {
-    if (this.currentCell > this.props.width - 1) {
+    // after ensuring vertical connections
+    if (this.currentCell > this.props.width) {
       clearInterval(this.timerID);
+      // remove the active style
+      const cells = this.state.cells.map((cell, i) => {
+  
+        return <Cell setID={cell.props.setID}
+                     active={false}
+                     walls={cell.props.walls}/>
+      });
+      this.setState({ cells });
+      // tell the Maze that the row is done, so we can pass
+      // the state of the row to the next Row
+      this.props.sendRowState(this.state.cells, this.props.index);
+      return;
+    }
+    // after the rows have been joined
+    if (this.currentCell > this.props.width - 1) {
       this.ensureVerticalConnections();
       return;
     }
 
-    const cells = this.getCellsAndHighlightCurrent();
+    let cells = this.getCellsAndHighlightCurrent();
     const currentCellSetId = cells[this.currentCell].props.setID;
 
-    if (this.willJoin()) {
+    if (this.willJoin() && this.currentCell < this.props.width - 1) {
       cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
     }
 
@@ -124,18 +141,28 @@ class Row extends Component {
       cells[this.currentCell] = this.joinCellToLastSet(cells);
     }
 
+    // if last set, give bottom walls
+    // TODO: the merges above are being overwritten
+    if (this.props.lastRow) {
+      cells = this.state.cells.map((cell, i) => {
+        const walls = { ...cell.props.walls, bottom: true };
+        return <Cell setID={cell.props.setID}
+                     active={false}
+                     walls={walls}/>
+      });
+    }
+
     this.setState({ cells });
   }
 
   // after the row has been created, ensure that atleast
   // one vertical connection exists per set
   // if not, randomly assign one
-  // TODO: continue
   ensureVerticalConnections() {
-    // if (this.props.previousRowCells) {
-    //   return;
-    // }
-
+    if (!this.props.previousRowCells) {
+      return;
+    }
+    
     // with form {[setID]: cellsBelongingToSet[]}
     const setMap = {};
     this.state.cells.forEach((cell,i) => {
@@ -161,10 +188,29 @@ class Row extends Component {
 
     console.log(setMap);
     console.log(cellsToAddVerticalConnection);
-    // set state and then
-    // tell the Maze that the row is done, so we can pass
-    // the state of the row to the next Row
-    this.props.sendRowState(this.state.cells, this.props.index);
+    const cells = this.state.cells.map((cell, i) => {
+      if (!cellsToAddVerticalConnection.includes(i)) {
+        return cell;
+      }
+      // last cell remove the active
+      if (i === this.props.width - 1) {
+        return <Cell setID={cell.props.setID}
+                     active={false}
+                     walls={cell.props.walls}/>
+      }
+      const walls = {
+        ...cell.props.walls,
+        top: false,
+      }
+
+      return <Cell setID={cell.props.setID}
+                   active={true}
+                   walls={walls}/>
+    });
+    console.log(cells);
+    // set state
+    this.setState({ cells });
+    
   }
 
   tick() {

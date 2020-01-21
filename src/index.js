@@ -28,7 +28,25 @@ class Maze extends Component {
   }
 
   receiveCompleteRow(cells, index) {
-    if (index === 3) {
+    if (index === this.width - 1) {
+      return;
+    }
+
+    // last one
+    if (index === this.width - 2) {
+      this.setState({
+        rows: [
+          // react saves the state for the previous rows so we just need
+          // to spread them here again
+          ...this.state.rows,
+          // the new row
+          <Row index={index + 1} 
+               width={this.width}
+               previousRowCells={cells}
+               lastRow={true}
+               sendRowState={this.receiveCompleteRow.bind(this)} />
+        ]
+      });
       return;
     }
 
@@ -50,7 +68,7 @@ class Maze extends Component {
     return (
       <div>
         <p>
-          Eller's Algorithm for Maze Generation in React
+          Eller's Algorithm for Perfect Maze Generation in React
         </p>
         {this.state.rows}
       </div>

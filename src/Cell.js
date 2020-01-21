@@ -37,6 +37,7 @@ Cell.propTypes = {
     left: PropTypes.bool,
     right: PropTypes.bool,
     top: PropTypes.bool,
+    bottom: PropTypes.bool,
   }),   
 };
 
