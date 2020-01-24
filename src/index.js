@@ -11,7 +11,6 @@ class Maze extends Component {
     this.width = 10;
     this.state = {
       rows: [],
-      cells: []
     }
   }
 
@@ -28,18 +27,14 @@ class Maze extends Component {
   }
 
   receiveCompleteRow(cells, index) {
-    if (index === this.width - 1) {
-      return;
+    if (index === this.height - 1) {
+      return
     }
 
-    // last one
-    if (index === this.width - 2) {
+    if (index === this.height - 2) {
       this.setState({
         rows: [
-          // react saves the state for the previous rows so we just need
-          // to spread them here again
           ...this.state.rows,
-          // the new row
           <Row index={index + 1} 
                width={this.width}
                previousRowCells={cells}

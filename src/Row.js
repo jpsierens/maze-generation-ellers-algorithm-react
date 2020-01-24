@@ -11,7 +11,12 @@ class Row extends Component {
     this.currentCell = 0;
     this.timesTicked = 0;
     this.speed = 100;
-    this.chanceToJoin = 0.66; // x100 for %
+    this.chanceToJoin = {
+      // the less chance, the more vertical walls
+      horizontal: 0.8, // x100 for %
+      // the less chance, the more horizontal walls
+      vertical: 0.33
+    }
     this.initialWalls = {
       left: true,
       right: true,
@@ -34,12 +39,15 @@ class Row extends Component {
     clearInterval(this.timerID);
   }
 
+  // TODO: i think we need to create vertical connections downwards instead of up
+  // because we are getting isolated cells on the first row, meaning we are not
+  // ensuring a vertical connection on them
   createRow() {
     let newCell;
     const {previousRowCells} = this.props;
     // if its not first, check if there will be a 
     // random vertical connection
-    if (previousRowCells && this.willJoin()) {
+    if (previousRowCells && this.willJoin('vertical')) {
       const walls = {
         ...this.initialWalls,
         top: false
@@ -63,8 +71,8 @@ class Row extends Component {
   }
 
 
-  willJoin() {
-    return Math.random() < this.chanceToJoin;
+  willJoin(direction) {
+    return Math.random() < this.chanceToJoin[direction];
   }
 
   getCellsAndHighlightCurrent() {
@@ -130,7 +138,7 @@ class Row extends Component {
     let cells = this.getCellsAndHighlightCurrent();
     const currentCellSetId = cells[this.currentCell].props.setID;
 
-    if (this.willJoin() && this.currentCell < this.props.width - 1) {
+    if (this.willJoin('horizontal') && this.currentCell < this.props.width - 1) {
       cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
     }
 
@@ -141,15 +149,22 @@ class Row extends Component {
       cells[this.currentCell] = this.joinCellToLastSet(cells);
     }
 
-    // if last set, give bottom walls
-    // TODO: the merges above are being overwritten
+    // if last set, 
+    // - give bottom walls
+    // - knock down walls between cells that are from different sets
     if (this.props.lastRow) {
-      cells = this.state.cells.map((cell, i) => {
-        const walls = { ...cell.props.walls, bottom: true };
-        return <Cell setID={cell.props.setID}
-                     active={false}
-                     walls={walls}/>
-      });
+      if (cells[this.currentCell + 1] && 
+          cells[this.currentCell + 1].props.setID !== 
+          cells[this.currentCell].props.setID) {
+        cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
+      }
+
+      const walls = { ...cells[this.currentCell].props.walls, bottom: true };
+
+      cells[this.currentCell] = 
+        <Cell setID={cells[this.currentCell].props.setID}
+              active={true}
+              walls={walls}/>;
     }
 
     this.setState({ cells });
@@ -159,7 +174,7 @@ class Row extends Component {
   // one vertical connection exists per set
   // if not, randomly assign one
   ensureVerticalConnections() {
-    if (!this.props.previousRowCells) {
+    if (!this.props.previousRowCells || this.props.lastRow) {
       return;
     }
     
@@ -183,11 +198,11 @@ class Row extends Component {
 
       if (hasAVerticalConnection) return null;
       // randomly choose a vertical connection
-      return setMap[key][Math.floor(Math.random() * setMap[key].length)];
+      const randomCell = setMap[key][Math.floor(Math.random() * setMap[key].length)];
+      console.log(`row ${this.props.index} to receive a vertical connection in cell ${randomCell}`)
+      return randomCell;
     });
 
-    console.log(setMap);
-    console.log(cellsToAddVerticalConnection);
     const cells = this.state.cells.map((cell, i) => {
       if (!cellsToAddVerticalConnection.includes(i)) {
         return cell;
@@ -207,7 +222,7 @@ class Row extends Component {
                    active={true}
                    walls={walls}/>
     });
-    console.log(cells);
+
     // set state
     this.setState({ cells });
     
