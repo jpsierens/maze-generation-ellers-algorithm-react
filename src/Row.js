@@ -20,8 +20,8 @@ class Row extends Component {
     this.initialWalls = {
       left: true,
       right: true,
-      top: true,
-      bottom: false,
+      top: false,
+      bottom: true,
     }
     this.state = {
       cells: [],
@@ -39,26 +39,43 @@ class Row extends Component {
     clearInterval(this.timerID);
   }
 
-  // TODO: i think we need to create vertical connections downwards instead of up
-  // because we are getting isolated cells on the first row, meaning we are not
-  // ensuring a vertical connection on them
+  generateNewSetId() {
+    const index = this.props.index * 10;
+    const id = index + this.currentCell;
+    return id;
+  }
+
   createRow() {
     let newCell;
     const {previousRowCells} = this.props;
-    // if its not first, check if there will be a 
+    let walls = {
+      ...this.initialWalls,
+      top: previousRowCells ? false : true,
+    }
+
+    // check if there will be a 
     // random vertical connection
-    if (previousRowCells && this.willJoin('vertical')) {
-      const walls = {
-        ...this.initialWalls,
-        top: false
+    if (this.willJoin('vertical')) {
+      walls = {
+        ...walls,
+        bottom: this.props.lastRow ? true : false
       }
-      newCell = <Cell setID={previousRowCells[this.currentCell].props.setID}
+
+      console.log(previousRowCells);
+      console.log(this.currentCell);
+      console.log(previousRowCells[this.currentCell]);
+
+      const setID = previousRowCells ? 
+        previousRowCells[this.currenCell].props.setID : 
+        this.generateNewSetId();
+
+      newCell = <Cell setID={setID}
                       walls={walls}/>;
     } else {
       // adding the row index as a multiple of 10 to the currentCell
       // we make sure that the setID hasn't been used before
-      newCell = <Cell setID={this.props.index*10 + this.currentCell}
-                      walls={this.initialWalls}/>;
+      newCell = <Cell setID={this.generateNewSetId()}
+                      walls={walls}/>;
     }
 
     this.setState({
@@ -159,12 +176,10 @@ class Row extends Component {
         cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
       }
 
-      const walls = { ...cells[this.currentCell].props.walls, bottom: true };
-
       cells[this.currentCell] = 
         <Cell setID={cells[this.currentCell].props.setID}
               active={true}
-              walls={walls}/>;
+              walls={cells[this.currentCell].props.walls}/>;
     }
 
     this.setState({ cells });
