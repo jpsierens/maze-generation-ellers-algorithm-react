@@ -55,18 +55,14 @@ class Row extends Component {
 
     // check if there will be a 
     // random vertical connection
-    if (this.willJoin('vertical')) {
+    if (this.willJoin('vertical') && !this.props.lastRow) {
       walls = {
         ...walls,
-        bottom: this.props.lastRow ? true : false
+        bottom: false
       }
 
-      console.log(previousRowCells);
-      console.log(this.currentCell);
-      console.log(previousRowCells[this.currentCell]);
-
       const setID = previousRowCells ? 
-        previousRowCells[this.currenCell].props.setID : 
+        previousRowCells[this.currentCell].props.setID : 
         this.generateNewSetId();
 
       newCell = <Cell setID={setID}
@@ -206,7 +202,7 @@ class Row extends Component {
     const cellsToAddVerticalConnection = Object.keys(setMap).map(key => {
       let hasAVerticalConnection = false;
       setMap[key].forEach(cellIndex => {
-        if (!this.state.cells[cellIndex].props.walls.top) {
+        if (!this.state.cells[cellIndex].props.walls.bottom) {
           hasAVerticalConnection = true;
         }
       });
@@ -214,7 +210,6 @@ class Row extends Component {
       if (hasAVerticalConnection) return null;
       // randomly choose a vertical connection
       const randomCell = setMap[key][Math.floor(Math.random() * setMap[key].length)];
-      console.log(`row ${this.props.index} to receive a vertical connection in cell ${randomCell}`)
       return randomCell;
     });
 
@@ -222,25 +217,19 @@ class Row extends Component {
       if (!cellsToAddVerticalConnection.includes(i)) {
         return cell;
       }
-      // last cell remove the active
-      if (i === this.props.width - 1) {
-        return <Cell setID={cell.props.setID}
-                     active={false}
-                     walls={cell.props.walls}/>
-      }
+
       const walls = {
         ...cell.props.walls,
-        top: false,
+        bottom: false,
       }
 
       return <Cell setID={cell.props.setID}
-                   active={true}
+                   active={i === this.props.width - 1 ? true : false}
                    walls={walls}/>
     });
 
     // set state
     this.setState({ cells });
-    
   }
 
   tick() {
