@@ -155,9 +155,9 @@ class Row extends Component {
       cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
     }
 
-    // if the current cell must be joined to the previous cell
-    // whether it will join or not was decided on the previous tick
-    // we just do the join in this tick so that it visually looks like
+    // if the current cell must be joined to the previous cell.
+    // Whether it will join or not was decided on the previous tick
+    // we just do the join in this tick so that it looks better visually
     if (cells[this.currentCell - 1] && !cells[this.currentCell - 1].props.walls.right) {
       cells[this.currentCell] = this.joinCellToLastSet(cells);
     }
@@ -185,7 +185,7 @@ class Row extends Component {
   // one vertical connection exists per set
   // if not, randomly assign one
   ensureVerticalConnections() {
-    if (!this.props.previousRowCells || this.props.lastRow) {
+    if (this.props.lastRow) {
       return;
     }
     
