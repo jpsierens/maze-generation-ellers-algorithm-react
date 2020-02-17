@@ -10,7 +10,7 @@ class Row extends Component {
     // the index of the cell inside the row
     this.currentCell = 0;
     this.timesTicked = 0;
-    this.speed = 100;
+    this.speed = 1000;
     this.chanceToJoin = {
       // the less chance, the more vertical walls
       horizontal: 0.8, // x100 for %
@@ -47,10 +47,18 @@ class Row extends Component {
 
   createRow() {
     let newCell;
+    let setID;
     const {previousRowCells} = this.props;
     let walls = {
       ...this.initialWalls,
       top: previousRowCells ? false : true,
+    }
+
+    // if the above cell is connected, use its setID
+    if (previousRowCells && !previousRowCells[this.currentCell].props.walls.bottom) {
+      setID = previousRowCells[this.currentCell].props.setID;
+    } else {
+      setID = this.generateNewSetId();
     }
 
     // check if there will be a 
@@ -60,19 +68,9 @@ class Row extends Component {
         ...walls,
         bottom: false
       }
-
-      const setID = previousRowCells ? 
-        previousRowCells[this.currentCell].props.setID : 
-        this.generateNewSetId();
-
-      newCell = <Cell setID={setID}
-                      walls={walls}/>;
-    } else {
-      // adding the row index as a multiple of 10 to the currentCell
-      // we make sure that the setID hasn't been used before
-      newCell = <Cell setID={this.generateNewSetId()}
-                      walls={walls}/>;
     }
+
+    newCell = <Cell setID={setID} walls={walls}/>;
 
     this.setState({
       cells: [
@@ -151,15 +149,19 @@ class Row extends Component {
     let cells = this.getCellsAndHighlightCurrent();
     const currentCellSetId = cells[this.currentCell].props.setID;
 
-    if (this.willJoin('horizontal') && this.currentCell < this.props.width - 1) {
-      cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
-    }
-
     // if the current cell must be joined to the previous cell.
     // Whether it will join or not was decided on the previous tick
     // we just do the join in this tick so that it looks better visually
     if (cells[this.currentCell - 1] && !cells[this.currentCell - 1].props.walls.right) {
       cells[this.currentCell] = this.joinCellToLastSet(cells);
+    }
+
+    if (
+      this.willJoin('horizontal') &&
+      this.currentCell < this.props.width - 1 &&
+      currentCellSetId !== cells[this.currentCell + 1].props.setID
+    ) {
+      cells[this.currentCell] = this.joinCellToSet(cells, currentCellSetId);
     }
 
     // if last set, 
