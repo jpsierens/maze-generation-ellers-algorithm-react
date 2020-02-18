@@ -10,7 +10,7 @@ class Row extends Component {
     // the index of the cell inside the row
     this.currentCell = 0;
     this.timesTicked = 0;
-    this.speed = 1000;
+    this.speed = 400;
     this.chanceToJoin = {
       // the less chance, the more vertical walls
       horizontal: 0.8, // x100 for %
@@ -147,14 +147,18 @@ class Row extends Component {
     }
 
     let cells = this.getCellsAndHighlightCurrent();
-    const currentCellSetId = cells[this.currentCell].props.setID;
 
     // if the current cell must be joined to the previous cell.
     // Whether it will join or not was decided on the previous tick
     // we just do the join in this tick so that it looks better visually
-    if (cells[this.currentCell - 1] && !cells[this.currentCell - 1].props.walls.right) {
+    if (
+      cells[this.currentCell - 1] &&
+      !cells[this.currentCell - 1].props.walls.right
+    ) {
       cells[this.currentCell] = this.joinCellToLastSet(cells);
     }
+
+    const currentCellSetId = cells[this.currentCell].props.setID;
 
     if (
       this.willJoin('horizontal') &&
