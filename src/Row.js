@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
 import PropTypes from 'prop-types';
 
 import Cell from './Cell.js'
@@ -10,7 +9,7 @@ class Row extends Component {
     // the index of the cell inside the row
     this.currentCell = 0;
     this.timesTicked = 0;
-    this.speed = 400;
+    this.speed = 0;
     this.chanceToJoin = {
       // the less chance, the more vertical walls
       horizontal: 0.8, // x100 for %
@@ -61,14 +60,14 @@ class Row extends Component {
       setID = this.generateNewSetId();
     }
 
-    // check if there will be a 
-    // random vertical connection
-    if (this.willJoin('vertical') && !this.props.lastRow) {
-      walls = {
-        ...walls,
-        bottom: false
-      }
-    }
+    // // check if there will be a 
+    // // random vertical connection
+    // if (this.willJoin('vertical') && !this.props.lastRow) {
+    //   walls = {
+    //     ...walls,
+    //     bottom: false
+    //   }
+    // }
 
     newCell = <Cell setID={setID} walls={walls}/>;
 

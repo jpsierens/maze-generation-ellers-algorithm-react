@@ -2,25 +2,28 @@ import React, { Component } from 'react';
 import { render } from 'react-dom';
 
 import Row from './Row.js';
+import Actions from './Actions.js';
 import './style.css';
 
 class Maze extends Component {
   constructor() {
     super();
-    this.height = 10;
-    this.width = 10;
     this.state = {
+      height: 10,
+      width: 10,
       rows: [],
+      completed: false
     }
 
     this.resetMaze = this.resetMaze.bind(this);
+    this.setDimension = this.setDimension.bind(this);
   }
 
   startMaze() {
     this.setState({
       rows: [
         <Row index={0} 
-             width={this.width}
+             width={this.state.width}
              cells={false}
              previousRowCells={false}
              sendRowState={this.receiveCompleteRow.bind(this)} />
@@ -28,21 +31,20 @@ class Maze extends Component {
     })
   }
 
-  componentDidMount() {
-    this.startMaze();
-  }
-
   receiveCompleteRow(cells, index) {
-    if (index === this.height - 1) {
+    // Done with the maze
+    if (index === this.state.height - 1) {
+      this.setState({ completed: true })
       return
     }
 
-    if (index === this.height - 2) {
+    // last row
+    if (index === this.state.height - 2) {
       this.setState({
         rows: [
           ...this.state.rows,
           <Row index={index + 1} 
-               width={this.width}
+               width={this.state.width}
                previousRowCells={cells}
                lastRow={true}
                sendRowState={this.receiveCompleteRow.bind(this)} />
@@ -58,32 +60,48 @@ class Maze extends Component {
         ...this.state.rows,
         // the new row
         <Row index={index + 1} 
-             width={this.width}
+             width={this.state.width}
              previousRowCells={cells}
              sendRowState={this.receiveCompleteRow.bind(this)} />
       ]
     });
   }
 
+  setDimension(dimension, event) {
+    if (dimension === 'width') {
+      this.setState({ width: Number(event.target.value) })
+      return
+    }
+    this.setState({ height: Number(event.target.value) })
+  }
+
   resetMaze() {
-    console.log('yaaauuuu');
-    
+    if (!this.state.rows.length) {
+      this.startMaze();
+      return;
+    }
+    this.setState({ rows: [], completed: false });
   }
 
   render() {
+    const { rows, completed } = this.state;
+
     return (
       <div>
-        <p>
+        <h3>
           Eller's Algorithm for Perfect Maze Generation in React
-        </p>
+        </h3>
 
-        <div>
-          <button className="reset-cta" onClick={this.resetMaze}>
-            Clear Maze
-          </button>
+        <Actions width={this.state.width}
+                 height={this.state.height}
+                 rows={this.state.rows}
+                 startMaze={this.startMaze}
+                 resetMaze={this.resetMaze}
+                 setDimension={this.setDimension} />
+
+        <div className={`maze ${completed ? 'completed' : ''}`}>
+          {rows}
         </div>
-
-        {this.state.rows}
       </div>
     );
   }
