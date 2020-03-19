@@ -34,7 +34,4 @@ https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 http://www.neocomputer.org/projects/eller.html
 
 TODO:
-- remove the set numbers once completed
-- give user the ability to choose row size and maze height
-- give user the ability to choose the probability to merge cells
 - give user the ability to choose the speed

@@ -10,12 +10,6 @@ class Row extends Component {
     this.currentCell = 0;
     this.timesTicked = 0;
     this.speed = 0;
-    this.chanceToJoin = {
-      // the less chance, the more vertical walls
-      horizontal: 0.8, // x100 for %
-      // the less chance, the more horizontal walls
-      vertical: 0.33
-    }
     this.initialWalls = {
       left: true,
       right: true,
@@ -81,8 +75,8 @@ class Row extends Component {
   }
 
 
-  willJoin(direction) {
-    return Math.random() < this.chanceToJoin[direction];
+  willJoin() {
+    return this.props.chanceToJoin > Math.random();
   }
 
   getCellsAndHighlightCurrent() {
@@ -160,7 +154,7 @@ class Row extends Component {
     const currentCellSetId = cells[this.currentCell].props.setID;
 
     if (
-      this.willJoin('horizontal') &&
+      this.willJoin() &&
       this.currentCell < this.props.width - 1 &&
       currentCellSetId !== cells[this.currentCell + 1].props.setID
     ) {
@@ -257,6 +251,7 @@ class Row extends Component {
 Row.propTypes = {
   width: PropTypes.number,
   index: PropTypes.number,
+  chanceToJoin: PropTypes.number,
   sendRowState: PropTypes.func
 };
 
