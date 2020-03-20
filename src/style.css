@@ -33,8 +33,12 @@ h1, p {
   width: 100px;
   height: 30px;
   border: 1px solid #999;
-  margin: 10px 0;
   cursor: pointer;
+  margin-right: 40px;
+}
+
+.main-menu {
+  margin-bottom: 20px;
 }
 
 /* hides the text */
@@ -45,4 +49,12 @@ h1, p {
 
 .chance-label-hint:hover {
   cursor: help;
+}
+
+.stargazers {
+  margin-top: 50px
+}
+
+.love-text {
+  margin-top: 10px;
 }

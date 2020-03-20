@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 
 import Row from './Row.js';
 import Actions from './Actions.js';
+import StarGazers from './StarGazers';
 import './style.css';
 
 class Maze extends Component {
@@ -13,6 +14,7 @@ class Maze extends Component {
       width: 10,
       rows: [],
       completed: false,
+      speed: 0,
       // the less chance, the more vertical walls
       chanceToJoin: 0.5,
     }
@@ -20,6 +22,7 @@ class Maze extends Component {
     this.resetMaze = this.resetMaze.bind(this);
     this.setDimension = this.setDimension.bind(this);
     this.setChance = this.setChance.bind(this);
+    this.setSpeed = this.setSpeed.bind(this);
   }
 
   startMaze() {
@@ -28,6 +31,7 @@ class Maze extends Component {
         <Row index={0} 
              width={this.state.width}
              chanceToJoin={this.state.chanceToJoin}
+             speed={this.state.speed}
              cells={false}
              previousRowCells={false}
              sendRowState={this.receiveCompleteRow.bind(this)} />
@@ -50,6 +54,7 @@ class Maze extends Component {
           <Row index={index + 1} 
                width={this.state.width}
                chanceToJoin={this.state.chanceToJoin}
+               speed={this.state.speed}
                previousRowCells={cells}
                lastRow={true}
                sendRowState={this.receiveCompleteRow.bind(this)} />
@@ -67,6 +72,7 @@ class Maze extends Component {
         <Row index={index + 1} 
              width={this.state.width}
              chanceToJoin={this.state.chanceToJoin}
+             speed={this.state.speed}
              previousRowCells={cells}
              sendRowState={this.receiveCompleteRow.bind(this)} />
       ]
@@ -83,6 +89,10 @@ class Maze extends Component {
 
   setChance(event) {
     this.setState({ chanceToJoin: event.target.value });
+  }
+
+  setSpeed(event) {
+    this.setState({ speed: event.target.value });
   }
 
   resetMaze() {
@@ -106,13 +116,21 @@ class Maze extends Component {
                  height={this.state.height}
                  rows={this.state.rows}
                  chanceToJoin={this.state.chanceToJoin}
+                 speed={this.state.speed}
                  startMaze={this.startMaze}
                  resetMaze={this.resetMaze}
                  setDimension={this.setDimension} 
-                 setChance={this.setChance}/>
+                 setChance={this.setChance}
+                 setSpeed={this.setSpeed}/>
 
         <div className={`maze ${completed ? 'completed' : ''}`}>
           {rows}
+        </div>
+
+        <div className="stargazers">
+          <StarGazers apiUrl="https://api.github.com/repos/jpsierens/maze-generation-ellers-algorithm-react/stargazers" 
+                      projectUrl="https://github.com/jpsierens/maze-generation-ellers-algorithm-react"/>
+
         </div>
       </div>
     );

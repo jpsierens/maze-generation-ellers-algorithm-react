@@ -9,13 +9,13 @@ clone this repo
 git clone https://github.com/jpsierens/maze-generation-ellers-algorithm-react.git
 ```
 
-You must have Nodejs and npm installed. If so, go into the downloaded repo's root and do
+You must have Nodejs and npm installed. If so, go into the project's root and do
 ```
 npm install
 ```
 
 ## Use
-In the repo's root
+In the root directory
 ```
 npm start
 ```
@@ -27,11 +27,12 @@ Reading about it made me create this showcase. I am making it so that everytime 
 
 If you're wondering why there's no entrance or exit, it's because you can choose any two points in the maze's outer walls to open up and there will always be a path between the two.
 
-There's one thing I didn't implement according to the instructions given at any of the sources, they say to give atleast one vertical connection to each set, but personally I wasn't able to get perfect mazes when there was more than one vertical connection per set. 
+There's one thing I didn't implement according to the instructions given at any of the sources, they say to give atleast one vertical connection to each set, but personally I wasn't able to get perfect mazes when there was more than one vertical connection per set.
 
-Sources:
+### Sources:
 https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 http://www.neocomputer.org/projects/eller.html
 
 TODO:
-- give user the ability to choose the speed
+- github interaction
+- deal with overflow for wider mazes
