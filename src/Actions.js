@@ -46,9 +46,8 @@ class Actions extends Component {
             </div>
 
             <div>
-              <label htmlFor="mergeChanceInput" title="Chance to join cells horizontally. values from 0 to 1. A high chance tends to create vertical mazes while a low chance creates more horizontal ones.">
-                Merge chance
-                <span className="chance-label-hint">(?): </span> 
+              <label htmlFor="mergeChanceInput" title="Chance to join cells horizontally. values from 0 to 1. A high chance tends to create horizontal mazes while a low chance creates more vertical ones.">
+                Merge chance (min 0 max 1): 
               </label>
               <input id="mergeChanceInput"
                      type="text"
@@ -60,8 +59,7 @@ class Actions extends Component {
 
             <div>
               <label htmlFor="speed" title="How fast you want the maze to generate. Units in milliseconds. Slower speed gives you a better visual insight on how the algorithm works">
-                Maze generation speed (ms)
-                <span className="chance-label-hint">(?): </span> 
+                Maze generation speed (ms): 
               </label>
               <input id="speedInput"
                      type="text"

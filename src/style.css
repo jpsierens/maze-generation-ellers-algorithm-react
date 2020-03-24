@@ -2,6 +2,10 @@ h1, p {
   font-family: Lato;
 }
 
+.maze {
+  white-space: nowrap;
+}
+
 .cell {
   display: inline-flex;
   width: 35px;
