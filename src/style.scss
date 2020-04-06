@@ -1,3 +1,5 @@
+@import '~bootstrap/scss/bootstrap';
+
 h1, p {
   font-family: Lato;
 }
@@ -20,25 +22,17 @@ h1, p {
   background: rgba(0,0,0,0.5);
 }
 
-.border-left {
-  border-left: 1px solid black;
+.cell-border-left {
+  border-left: 1px solid $gray-700;
 }
-.border-right {
-  border-right: 1px solid black;
+.cell-border-right {
+  border-right: 1px solid $gray-700;
 }
-.border-top {
-  border-top: 1px solid black;
+.cell-border-top {
+  border-top: 1px solid $gray-700;
 }
-.border-bottom {
-  border-bottom: 1px solid black;
-}
-
-.button {
-  width: 100px;
-  height: 30px;
-  border: 1px solid #999;
-  cursor: pointer;
-  margin-right: 40px;
+.cell-border-bottom {
+  border-bottom: 1px solid $gray-700;
 }
 
 .main-menu {

@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import Row from './Row.js';
 import Actions from './Actions.js';
 import StarGazers from './StarGazers';
-import './style.css';
+import './style.scss';
 
 class Maze extends Component {
   constructor() {
@@ -107,8 +107,8 @@ class Maze extends Component {
     const { rows, completed } = this.state;
 
     return (
-      <div>
-        <h3>
+      <div className="container pt-5">
+        <h3 className="pb-3">
           Eller's Algorithm for Perfect Maze Generation in React
         </h3>
 
