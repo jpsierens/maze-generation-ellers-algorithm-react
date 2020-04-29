@@ -38,3 +38,4 @@ http://www.neocomputer.org/projects/eller.html
 
 TODO:
 - bigger maze sizes mess with the perfectness of the maze (maybe because you start reassigning sets?)
+- when joining a cell to a set, if there's another cell with the same previous set, it must be added to the new set as well.
