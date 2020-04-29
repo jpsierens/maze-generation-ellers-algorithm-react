@@ -53,9 +53,9 @@ class Row extends Component {
       setID = this.generateNewSetId();
     }
 
-    // // check if there will be a 
-    // // random vertical connection
-    if (this.willJoin('vertical') && !this.props.lastRow) {
+    // check if there will be a 
+    // random vertical connection
+    if (this.willJoinVertical() && !this.props.lastRow) {
       walls = {
         ...walls,
         bottom: false
@@ -73,6 +73,9 @@ class Row extends Component {
     this.currentCell += 1;
   }
 
+  willJoinVertical() {
+    return 1 - this.props.chanceToJoin > Math.random();
+  }
 
   willJoin() {
     return this.props.chanceToJoin > Math.random();
