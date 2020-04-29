@@ -1,7 +1,9 @@
 # Maze Generation with Eller's algorithm in Reactjs
 > An interactive visual maze generation in React. Following Eller's algorithm for generating mazes.
 
-:construction: WIP :construction:
+![](http://jpsierens.me/wp-content/uploads/2020/03/ellers-algorithm.gif)
+
+play around with a live example at: http://jpsierens.me/maze-generation/
 
 ## Install
 clone this repo
