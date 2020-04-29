@@ -37,6 +37,3 @@ There's one thing I didn't implement according to the instructions given at any 
 https://weblog.jamisbuck.org/2010/12/29/maze-generation-eller-s-algorithm
 
 http://www.neocomputer.org/projects/eller.html
-
-TODO:
-- bigger maze sizes mess with the perfectness of the maze (maybe because you start reassigning sets?)
