@@ -30,6 +30,7 @@ class Maze extends Component {
     this.setState({
       rows: [
         <Row index={0} 
+             key={0}
              width={this.state.width}
              chanceToJoin={this.state.chanceToJoin}
              speed={this.state.speed}
@@ -53,6 +54,7 @@ class Maze extends Component {
         rows: [
           ...this.state.rows,
           <Row index={index + 1} 
+               key={index + 1}
                width={this.state.width}
                chanceToJoin={this.state.chanceToJoin}
                speed={this.state.speed}
@@ -70,7 +72,8 @@ class Maze extends Component {
         // to spread them here again
         ...this.state.rows,
         // the new row
-        <Row index={index + 1} 
+        <Row index={index + 1}
+             key={index + 1}
              width={this.state.width}
              chanceToJoin={this.state.chanceToJoin}
              speed={this.state.speed}
@@ -109,9 +112,14 @@ class Maze extends Component {
   }
 
   isFormValid() {
-    const { width, height, chanceToJoin } = this.state;
+    const { width, height, chanceToJoin, speed } = this.state;
 
-    return width && height && chanceToJoin >= 0 && chanceToJoin <= 1;
+    return (
+      width && 
+      height && 
+      chanceToJoin !== '' && chanceToJoin >= 0 && chanceToJoin <= 1 &&
+      speed !== '' && speed >= 0
+    );
   }
 
   resetMaze(e) {

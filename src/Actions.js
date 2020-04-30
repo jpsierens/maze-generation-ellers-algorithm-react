@@ -18,7 +18,8 @@ class Actions extends Component {
     return (
       <form className="actions">
         <div className="main-menu">
-          <button className="btn btn-primary" onClick={resetMaze}>
+          <button className={`btn ${rows.length ? 'btn-danger' : 'btn-primary'}`} 
+                  onClick={resetMaze}>
             {rows.length ? 'Clear Maze' : 'Generate Maze'}
           </button>
         </div>
@@ -26,7 +27,7 @@ class Actions extends Component {
         { rows.length ? null : 
           <div>
             <div className="row">
-              <div className="col-12 col-sm-6 col-lg-3">
+              <div className="col-12 col-sm-6 col-lg-4 col-xl-3">
                 <div className="form-group">
                   <label htmlFor="widthInput">Width:</label>
 
@@ -44,7 +45,7 @@ class Actions extends Component {
                 </div>
               </div>
             
-              <div className="col-12 col-sm-6 col-lg-3">
+              <div className="col-12 col-sm-6 col-lg-4 col-xl-3">
                 <div className="form-group">
                   <label htmlFor="heightInput">Height:</label>
 
@@ -64,7 +65,7 @@ class Actions extends Component {
             </div>
 
             <div className="row">
-              <div className="col-12 col-sm-6 col-lg-3">
+              <div className="col-12 col-sm-6 col-lg-4 col-xl-3">
                 <div className="form-group">
                 <label htmlFor="mergeChanceInput">
                   Merge chance (min 0 max 1): 
@@ -84,7 +85,7 @@ class Actions extends Component {
                   </small>
                 </div>
               </div>
-              <div className="col-12 col-sm-6 col-lg-3">
+              <div className="col-12 col-sm-6 col-lg-4 col-xl-3">
                 <div className="form-group">
                 <label htmlFor="mergeChanceInput">
                   Maze generation speed (ms):

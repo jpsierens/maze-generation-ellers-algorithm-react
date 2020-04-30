@@ -62,7 +62,7 @@ class Row extends Component {
       }
     }
 
-    newCell = <Cell setID={setID} walls={walls}/>;
+    newCell = <Cell setID={setID} walls={walls} key={this.currentCell}/>;
 
     this.setState({
       cells: [
@@ -84,13 +84,9 @@ class Row extends Component {
   getCellsAndHighlightCurrent() {
     return this.state.cells.map((cell, i) => {
       if (i !== this.currentCell) {
-        return <Cell setID={cell.props.setID}
-                     active={false}
-                     walls={cell.props.walls}/>
+        return <Cell {...cell.props} key={i} active={false}/>
       }
-      return <Cell setID={cell.props.setID}
-                     active={true}
-                     walls={cell.props.walls}/>
+      return <Cell {...cell.props} key={i} active={true}/>
     });
   }
 
@@ -105,9 +101,7 @@ class Row extends Component {
         return cell;
       }
 
-      return <Cell setID={currentCellSetId}
-                   active={cell.props.active}
-                   walls={cell.props.walls}/>
+      return <Cell {...cell.props} key={i} setID={currentCellSetId}/>
     });
   }
 
@@ -117,10 +111,7 @@ class Row extends Component {
       clearInterval(this.timerID);
       // remove the active style
       const cells = this.state.cells.map((cell, i) => {
-  
-        return <Cell setID={cell.props.setID}
-                     active={false}
-                     walls={cell.props.walls}/>
+        return <Cell {...cell.props} key={i} active={false}/>
       });
       this.setState({ cells });
       // tell the Maze that the row is done, so we can pass
@@ -203,7 +194,8 @@ class Row extends Component {
         bottom: false,
       }
 
-      return <Cell setID={cell.props.setID}
+      return <Cell {...cell.props}
+                   key={i}
                    active={i === this.props.width - 1 ? true : false}
                    walls={walls}/>
     });
