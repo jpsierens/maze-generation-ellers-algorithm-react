@@ -3,7 +3,7 @@
 
 ![](http://jpsierens.me/wp-content/uploads/2020/03/ellers-algorithm.gif)
 
-play around with a live example at: http://jpsierens.me/maze-generation/
+play around with a live example at: http://jpsierens.com/maze-generation/
 
 ## Install
 clone this repo
